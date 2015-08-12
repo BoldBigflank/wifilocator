@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
 });
 
 app.post('/geo', function(req, res){
-    accessPoints = req.body.accessPoints;
+    accessPoints = JSON.stringify(req.body.accessPoints);
     // Must be in this form
     // {
     //     "macAddress": "01:23:45:56:89:AB",
@@ -26,24 +26,32 @@ app.post('/geo', function(req, res){
     //     "channel": 11,
     //     "signalToNoiseRatio": 40
     // }
-
-    request.post({
-        url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=' + settings.google_api_key,
-        headers:{
-            'content-type':'application/json'
-        },
-        body: {
-            wifiAccessPoints: accessPoints
-        }
-    },
-    function (error, response, body){
-        if (!error && response.statusCode == 200) {
-            console.log(body);  // Show the HTML response.
-            sendToKeen(body.location);
-        } else {
-            console.log("Request failed");
-        }
-    });
+    console.log(accessPoints);
+    request.post('https://www.googleapis.com/geolocation/v1/geolocate?key=' + settings.google_api_key, 
+        {"wifiAccessPoints": JSON.stringify(accessPoints)}, 
+        function(err, response, body){
+            console.log(err, body);
+            return res.sendStatus(200);
+    })
+    // request.post({
+    //     url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=' + settings.google_api_key,
+    //     headers:{
+    //         'content-type':'application/json'
+    //     },
+    //     body: {
+    //         "wifiAccessPoints": JSON.stringify(accessPoints)
+    //     }
+    // },
+    // function (error, response){
+    //     console.log(error, response);
+    //     if (!error && response.statusCode == 200) {
+    //         console.log(body);  // Show the HTML response.
+    //         sendToKeen(body.location);
+    //     } else {
+    //         console.log("Request failed");
+    //     }
+    //     return res.sendStatus(200);
+    // });
     
 });
 
