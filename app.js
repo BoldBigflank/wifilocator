@@ -31,7 +31,9 @@ app.post('/geo', function(req, res){
         {"wifiAccessPoints": JSON.stringify(accessPoints)},
         function(err, response, body){
             console.log(err, body);
+            if(body.location) sendToKeen(body.location);
             return res.sendStatus(200);
+
         }
     );
     
