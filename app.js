@@ -3,11 +3,14 @@ var app = express();
 var request = require('request');
 var settings = require('./settings');
 var Keen = require("keen.io");
+var bodyParser = require('body-parser');
 
 var client = Keen.configure({
     projectId: settings.keen_project_id,
     writeKey: settings.keen_write_key
 });
+
+app.use( bodyParser.json() );
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
